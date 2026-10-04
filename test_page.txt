@@ -1,0 +1,20 @@
+================================================================================
+          DELL 1130 LASER PRINTER - APPLE SILICON TEST PAGE
+================================================================================
+
+Date:           Sun Oct  4 2026
+Host:           Apple Silicon Mac (arm64)
+Driver:         Native QPDL v3 / SpliX Filter (Mach-O 64-bit arm64)
+Compression:    Algo0x11 / JBIG T.85 Engine
+Resolution:     600 DPI Monochrome
+
+--------------------------------------------------------------------------------
+System Information:
+  Operating System: macOS (Darwin ARM64)
+  CUPS Protocol:    QPDL / GDI
+  Connection:       Direct USB (High Speed)
+  Status:           SUCCESS
+
+If you can read this text clearly, your Dell 1130 print driver is fully
+operational on Apple Silicon!
+================================================================================

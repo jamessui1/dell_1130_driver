@@ -4,6 +4,7 @@
 *.a
 bin/
 build/
+dist/
 *.dSYM/
 
 # OS artifacts
