@@ -22,7 +22,7 @@
 *% Driver-defined attributes...
 *QPDL BandSize: "128"
 *PJL BeginPJL: "<1B>%-12345X"
-*PJL EndPJL: "<09><1B>%-12345X"
+*PJL EndPJL: "<09><1B>%-12345X@PJL EOJ<0D><0A><1B>%-12345X"
 *QPDL QPDLVersion: "3"
 *General DocHeaderValues: "<0><0><1>"
 *cupsBackSide: "Normal"

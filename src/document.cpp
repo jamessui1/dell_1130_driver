@@ -92,7 +92,13 @@ Page* Document::getNextRawPage(const Request& request)
     page = new Page;
     page->setXResolution(header.HWResolution[0]);
     page->setYResolution(header.HWResolution[1]);
-    colors = header.cupsColorSpace == CUPS_CSPACE_K ? 1 : 4;
+    if (!request.printer()->color() || 
+        header.cupsColorSpace == CUPS_CSPACE_K || 
+        header.cupsColorSpace == CUPS_CSPACE_W || 
+        header.cupsColorSpace == CUPS_CSPACE_SW)
+        colors = 1;
+    else
+        colors = 4;
     documentWidth = (header.cupsWidth + 7) & ~7;
     documentHeight = header.cupsHeight;
     lineSize = header.cupsBytesPerLine / colors;

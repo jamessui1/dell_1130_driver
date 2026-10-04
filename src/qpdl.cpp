@@ -234,14 +234,14 @@ static bool _renderBand(const Request& request, const Band* band, bool mono)
                 uint32_t state;
 
                 checkSum += 0x39 + 0xAB + 0xCD + 0xEF;
-                if (!band->bandNr())
-                    state = 0x0;                        // First band
-                else if (nextBand) {
-                    state = 0x01000000;                 // Next band available
-                    checkSum += 0x01;
-                } else {
+                if (!nextBand) {
                     state = 0x02000000;                 // Last band
                     checkSum += 0x02;
+                } else if (!band->bandNr()) {
+                    state = 0x0;                        // First band
+                } else {
+                    state = 0x01000000;                 // Next band available
+                    checkSum += 0x01;
                 }
                 memset(header + size + 4, 0, 6*4);
 
@@ -346,8 +346,7 @@ bool renderPage(const Request& request, Page* page, bool lastPage)
     paperSource = request.printer()->paperSource();
     switch (request.duplex()) {
         case Request::Simplex:
-            /* Observed a value of 0 for 0x15 printers. */
-            duplex = (0x15 == page->compression())? 0 : 1;
+            duplex = 0;
             tumble = 0;
             break;
         case Request::LongEdge:
