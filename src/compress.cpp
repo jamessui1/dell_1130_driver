@@ -151,7 +151,7 @@ static bool _compressBandedPage(const Request& request, Page* page)
         hardMarginY()));
     hardMarginXInB = hardMarginX / 8;
     pageWidth = page->width();
-    pageHeight = page->height() - hardMarginY;
+    pageHeight = page->height();
     page->setWidth(pageWidth);
     page->setHeight(pageHeight);
     lineWidthInB = (pageWidth + 7) / 8;
@@ -220,30 +220,36 @@ static bool _compressBandedPage(const Request& request, Page* page)
                     return false;
             }
 
+            unsigned long planeSize = lineWidthInB * page->height();
             // Copy the data into the band depending on the algorithm options
             if (algo->reverseLineColumn()) {
                 for (unsigned int y=0; y < localHeight; y++) {
+                    unsigned long lineOffset = index + y * lineWidthInB;
                     for (unsigned int x=0; (x < lineWidthInB - hardMarginXInB) && (x < bandWidthInB); x++) {
-                        band[x * bandHeight + y] = planes[i][index + x + hardMarginXInB + y * lineWidthInB]; // ERR?
+                        if (lineOffset + x + hardMarginXInB < planeSize)
+                            band[x * bandHeight + y] = planes[i][lineOffset + x + hardMarginXInB];
+                        else
+                            band[x * bandHeight + y] = 0;
                     }
                     for (unsigned int x=lineWidthInB - hardMarginXInB; x < bandWidthInB; x++)
                         band[x * bandHeight + y] = 0;
                 }
             } else {
                 for (unsigned int y=0; y < localHeight; y++) {
+                    unsigned long lineOffset = index + y * lineWidthInB;
                     for (unsigned int x=0; (x < lineWidthInB - hardMarginXInB) && (x < bandWidthInB); x++) {
-                        band[x + y * bandWidthInB] = planes[i][index + x + hardMarginXInB + y * lineWidthInB];
+                        if (lineOffset + x + hardMarginXInB < planeSize)
+                            band[x + y * bandWidthInB] = planes[i][lineOffset + x + hardMarginXInB];
+                        else
+                            band[x + y * bandWidthInB] = 0;
                     }
                     for (unsigned int x=lineWidthInB - hardMarginXInB; x < bandWidthInB; x++)
-                        band[x + y * lineWidthInB]  = 0;
+                        band[x + y * lineWidthInB] = 0;
                 }
             }
 
-            // Does the band is empty?
-            if (_isEmptyBand(band, bandSize)) {
-                delete algo;
-                continue;
-            }
+            // In QPDL v3 / Dell 1130, all bands spanning the page must be transmitted
+            // so the print engine receives the full raster height and cycles the drum.
 
             // Check if bytes have to be reversed
             if (algo->inverseByte())
