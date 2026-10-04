@@ -40,14 +40,17 @@ if [ -z "$USB_URI" ]; then
 fi
 
 lpadmin -x "$QUEUE_NAME" 2>/dev/null || true
+lpadmin -x "Dell_1130_Laser_Printer__new_" 2>/dev/null || true
 lpadmin -p "$QUEUE_NAME" \
     -E \
     -v "$USB_URI" \
     -P "$PPD" \
     -D "Dell 1130 Laser Printer" \
     -L "USB" \
+    -o printer-error-policy=retry-job \
     -o PageSize=Letter
 
+lpadmin -d "$QUEUE_NAME" 2>/dev/null || true
 cupsenable "$QUEUE_NAME" 2>/dev/null || true
 cupsaccept "$QUEUE_NAME" 2>/dev/null || true
 

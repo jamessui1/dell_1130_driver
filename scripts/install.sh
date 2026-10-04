@@ -52,14 +52,17 @@ fi
 
 echo "5. Configuring CUPS printer queue '${QUEUE_NAME}'..."
 lpadmin -x "$QUEUE_NAME" 2>/dev/null || true
+lpadmin -x "Dell_1130_Laser_Printer__new_" 2>/dev/null || true
 lpadmin -p "$QUEUE_NAME" \
     -E \
     -v "$USB_URI" \
     -P "$TARGET_PPD" \
     -D "Dell 1130 Laser Printer" \
     -L "USB" \
+    -o printer-error-policy=retry-job \
     -o PageSize=Letter
 
+lpadmin -d "$QUEUE_NAME" 2>/dev/null || true
 cupsenable "$QUEUE_NAME"
 cupsaccept "$QUEUE_NAME"
 
