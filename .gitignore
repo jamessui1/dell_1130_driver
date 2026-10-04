@@ -1,0 +1,15 @@
+# Build artifacts
+*.o
+*.dylib
+*.a
+bin/
+build/
+*.dSYM/
+
+# OS artifacts
+.DS_Store
+
+# Temporary / test files
+scratch/
+test_output/
+*.log
